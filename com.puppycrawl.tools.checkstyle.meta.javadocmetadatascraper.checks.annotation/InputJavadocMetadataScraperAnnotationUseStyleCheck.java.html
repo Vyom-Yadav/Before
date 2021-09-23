@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InputJavadocMetadataScraperAnnotationUseStyleCheck.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">checkstyle$MetadataGeneratorUtilTest.exec</a> &gt; <a href="index.source.html" class="el_package">com.puppycrawl.tools.checkstyle.meta.javadocmetadatascraper.checks.annotation</a> &gt; <span class="el_source">InputJavadocMetadataScraperAnnotationUseStyleCheck.java</span></div><h1>InputJavadocMetadataScraperAnnotationUseStyleCheck.java</h1><pre class="source lang-java linenums">////////////////////////////////////////////////////////////////////////////////
+// checkstyle: Checks Java source code for adherence to a set of rules.
+// Copyright (C) 2001-2021 the original author or authors.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+////////////////////////////////////////////////////////////////////////////////
+
+package com.puppycrawl.tools.checkstyle.meta.javadocmetadatascraper.checks.annotation;
+
+import java.util.Locale;
+
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
+import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+
+/**
+ * &lt;p&gt;
+ * Checks the style of elements in annotations.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Annotations have three element styles starting with the least verbose.
+ * &lt;/p&gt;
+ * &lt;ul&gt;
+ * &lt;li&gt;
+ * {@code ElementStyleOption.COMPACT_NO_ARRAY}
+ * &lt;/li&gt;
+ * &lt;li&gt;
+ * {@code ElementStyleOption.COMPACT}
+ * &lt;/li&gt;
+ * &lt;li&gt;
+ * {@code ElementStyleOption.EXPANDED}
+ * &lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * To not enforce an element style a {@code ElementStyleOption.IGNORE} type is provided.
+ * The desired style can be set through the {@code elementStyle} property.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Using the {@code ElementStyleOption.EXPANDED} style is more verbose.
+ * The expanded version is sometimes referred to as &quot;named parameters&quot; in other languages.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Using the {@code ElementStyleOption.COMPACT} style is less verbose.
+ * This style can only be used when there is an element called 'value' which is either
+ * the sole element or all other elements have default values.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Using the {@code ElementStyleOption.COMPACT_NO_ARRAY} style is less verbose.
+ * It is similar to the {@code ElementStyleOption.COMPACT} style but single value arrays are
+ * flagged.
+ * With annotations a single value array does not need to be placed in an array initializer.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * The ending parenthesis are optional when using annotations with no elements.
+ * To always require ending parenthesis use the {@code ClosingParensOption.ALWAYS} type.
+ * To never have ending parenthesis use the {@code ClosingParensOption.NEVER} type.
+ * To not enforce a closing parenthesis preference a {@code ClosingParensOption.IGNORE} type is
+ * provided.
+ * Set this through the {@code closingParens} property.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Annotations also allow you to specify arrays of elements in a standard format.
+ * As with normal arrays, a trailing comma is optional.
+ * To always require a trailing comma use the {@code TrailingArrayCommaOption.ALWAYS} type.
+ * To never have a trailing comma use the {@code TrailingArrayCommaOption.NEVER} type.
+ * To not enforce a trailing array comma preference a {@code TrailingArrayCommaOption.IGNORE} type
+ * is provided. Set this through the {@code trailingArrayComma} property.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * By default the {@code ElementStyleOption} is set to {@code COMPACT_NO_ARRAY},
+ * the {@code TrailingArrayCommaOption} is set to {@code NEVER},
+ * and the {@code ClosingParensOption} is set to {@code NEVER}.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * According to the JLS, it is legal to include a trailing comma
+ * in arrays used in annotations but Sun's Java 5 &amp;amp; 6 compilers will not
+ * compile with this syntax. This may in be a bug in Sun's compilers
+ * since eclipse 3.4's built-in compiler does allow this syntax as
+ * defined in the JLS. Note: this was tested with compilers included with
+ * JDK versions 1.5.0.17 and 1.6.0.11 and the compiler included with eclipse 3.4.1.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * See &lt;a href=&quot;https://docs.oracle.com/javase/specs/jls/se11/html/jls-9.html#jls-9.7&quot;&gt;
+ * Java Language specification, &amp;#167;9.7&lt;/a&gt;.
+ * &lt;/p&gt;
+ * &lt;ul&gt;
+ * &lt;li&gt;
+ * Property {@code elementStyle} - Define the annotation element styles.
+ * Type is {@code
+ * com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationUseStyleCheck$ElementStyleOption}.
+ * Default value is {@code compact_no_array}.
+ * &lt;/li&gt;
+ * &lt;li&gt;
+ * Property {@code closingParens} - Define the policy for ending parenthesis.
+ * Type is {@code
+ * com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationUseStyleCheck$ClosingParensOption}.
+ * Default value is {@code never}.
+ * &lt;/li&gt;
+ * &lt;li&gt;
+ * Property {@code trailingArrayComma} - Define the policy for trailing comma in arrays.
+ * Type is {@code
+ * com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationUseStyleCheck$TrailingArrayCommaOption}.
+ * Default value is {@code never}.
+ * &lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * To configure the check:
+ * &lt;/p&gt;
+ * &lt;pre&gt;
+ * skipped as not relevant for UTs
+ * &lt;/pre&gt;
+ * &lt;p&gt;
+ * Parent is {@code com.puppycrawl.tools.checkstyle.TreeWalker}
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Violation Message Keys:
+ * &lt;/p&gt;
+ * &lt;ul&gt;
+ * &lt;li&gt;
+ * {@code annotation.incorrect.style}
+ * &lt;/li&gt;
+ * &lt;li&gt;
+ * {@code annotation.parens.missing}
+ * &lt;/li&gt;
+ * &lt;li&gt;
+ * {@code annotation.parens.present}
+ * &lt;/li&gt;
+ * &lt;li&gt;
+ * {@code annotation.trailing.comma.missing}
+ * &lt;/li&gt;
+ * &lt;li&gt;
+ * {@code annotation.trailing.comma.present}
+ * &lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * @since 5.0
+ *
+ */
+@StatelessCheck
+<span class="nc" id="L153">public abstract class InputJavadocMetadataScraperAnnotationUseStyleCheck extends AbstractCheck {</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

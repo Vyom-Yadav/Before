@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>XmlMetaReaderTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">checkstyle$MetadataGeneratorUtilTest.exec</a> &gt; <a href="index.source.html" class="el_package">com.puppycrawl.tools.checkstyle.meta</a> &gt; <span class="el_source">XmlMetaReaderTest.java</span></div><h1>XmlMetaReaderTest.java</h1><pre class="source lang-java linenums">////////////////////////////////////////////////////////////////////////////////
+// checkstyle: Checks Java source code for adherence to a set of rules.
+// Copyright (C) 2001-2021 the original author or authors.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+////////////////////////////////////////////////////////////////////////////////
+
+package com.puppycrawl.tools.checkstyle.meta;
+
+import static com.google.common.truth.Truth.assertThat;
+
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+
+import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.Test;
+
+import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
+
+<span class="nc" id="L34">public class XmlMetaReaderTest extends AbstractPathTestSupport {</span>
+
+    @Override
+    protected String getPackageLocation() {
+<span class="nc" id="L38">        return &quot;com/puppycrawl/tools/checkstyle/meta/xmlmetareader&quot;;</span>
+    }
+
+    @Test
+    public void testReadXmlMetaCheckWithProperties() throws Exception {
+<span class="nc" id="L43">        final String path = getPath(&quot;InputXmlMetaReaderCheckWithProps.xml&quot;);</span>
+<span class="nc" id="L44">        try (InputStream is = Files.newInputStream(Paths.get(path))) {</span>
+<span class="nc" id="L45">            final ModuleDetails result = XmlMetaReader.read(is, ModuleType.CHECK);</span>
+<span class="nc" id="L46">            checkModuleProps(result, ModuleType.CHECK, &quot;Some description for check&quot;,</span>
+                &quot;com.puppycrawl.tools.checkstyle.checks.misc.InputCheck&quot;,
+                &quot;com.puppycrawl.tools.checkstyle.TreeWalker&quot;);
+<span class="nc" id="L49">            assertThat(result.getName()).isEqualTo(&quot;InputCheck&quot;);</span>
+<span class="nc" id="L50">            final List&lt;String&gt; violationMessageKeys = result.getViolationMessageKeys();</span>
+<span class="nc" id="L51">            assertThat(violationMessageKeys.size()).isEqualTo(1);</span>
+<span class="nc" id="L52">            assertThat(violationMessageKeys.get(0)).isEqualTo(&quot;test.key&quot;);</span>
+<span class="nc" id="L53">            final List&lt;ModulePropertyDetails&gt; props = result.getProperties();</span>
+<span class="nc" id="L54">            assertThat(props.size()).isEqualTo(2);</span>
+<span class="nc" id="L55">            final ModulePropertyDetails prop1 = props.get(0);</span>
+<span class="nc" id="L56">            checkProperty(prop1, &quot;propertyOne&quot;, &quot;java.lang.String&quot;,</span>
+                &quot;propertyOneDefaultValue&quot;,
+                &quot;Property wrapped\n            description.&quot;);
+<span class="nc" id="L59">            assertThat(prop1.getValidationType()).isNull();</span>
+
+<span class="nc" id="L61">            final ModulePropertyDetails prop2 = props.get(1);</span>
+<span class="nc" id="L62">            checkProperty(prop2, &quot;propertyTwo&quot;, &quot;java.lang.String[]&quot;,</span>
+                &quot;&quot;, &quot;Property two desc&quot;);
+<span class="nc" id="L64">            assertThat(prop2.getValidationType()).isEqualTo(&quot;tokenTypesSet&quot;);</span>
+        }
+<span class="nc" id="L66">    }</span>
+
+    @Test
+    public void testReadXmlMetaCheckNoProperties() throws Exception {
+<span class="nc" id="L70">        final String path = getPath(&quot;InputXmlMetaReaderCheckNoProps.xml&quot;);</span>
+<span class="nc" id="L71">        try (InputStream is = Files.newInputStream(Paths.get(path))) {</span>
+<span class="nc" id="L72">            final ModuleDetails result = XmlMetaReader.read(is, ModuleType.CHECK);</span>
+<span class="nc" id="L73">            checkModuleProps(result, ModuleType.CHECK,</span>
+                &quot;Some description for check with no properties&quot;,
+                &quot;com.puppycrawl.tools.checkstyle.checks.misc.InputCheckNoProps&quot;,
+                &quot;com.puppycrawl.tools.checkstyle.TreeWalker&quot;);
+<span class="nc" id="L77">            assertThat(result.getName()).isEqualTo(&quot;InputCheckNoProps&quot;);</span>
+<span class="nc" id="L78">            final List&lt;String&gt; violationMessageKeys = result.getViolationMessageKeys();</span>
+<span class="nc" id="L79">            assertThat(violationMessageKeys.size()).isEqualTo(2);</span>
+<span class="nc" id="L80">            assertThat(violationMessageKeys.get(0)).isEqualTo(&quot;test.key1&quot;);</span>
+<span class="nc" id="L81">            assertThat(violationMessageKeys.get(1)).isEqualTo(&quot;test.key2&quot;);</span>
+<span class="nc" id="L82">            assertThat(result.getProperties().isEmpty()).isTrue();</span>
+        }
+<span class="nc" id="L84">    }</span>
+
+    @Test
+    public void testReadXmlMetaFilter() throws Exception {
+<span class="nc" id="L88">        final String path = getPath(&quot;InputXmlMetaReaderFilter.xml&quot;);</span>
+<span class="nc" id="L89">        try (InputStream is = Files.newInputStream(Paths.get(path))) {</span>
+<span class="nc" id="L90">            final ModuleDetails result = XmlMetaReader.read(is, ModuleType.FILTER);</span>
+<span class="nc" id="L91">            checkModuleProps(result, ModuleType.FILTER, &quot;Description for filter&quot;,</span>
+                &quot;com.puppycrawl.tools.checkstyle.filters.SomeFilter&quot;,
+                &quot;com.puppycrawl.tools.checkstyle.TreeWalker&quot;);
+<span class="nc" id="L94">            assertThat(result.getName()).isEqualTo(&quot;SomeFilter&quot;);</span>
+<span class="nc" id="L95">            assertThat(result.getViolationMessageKeys().isEmpty()).isTrue();</span>
+<span class="nc" id="L96">            final List&lt;ModulePropertyDetails&gt; props = result.getProperties();</span>
+<span class="nc" id="L97">            assertThat(props.size()).isEqualTo(1);</span>
+<span class="nc" id="L98">            final ModulePropertyDetails prop1 = props.get(0);</span>
+<span class="nc" id="L99">            checkProperty(prop1, &quot;propertyOne&quot;, &quot;java.util.regex.Pattern&quot;,</span>
+                &quot;propertyDefaultValue&quot;, &quot;Property description.&quot;);
+<span class="nc" id="L101">            assertThat(prop1.getValidationType()).isNull();</span>
+        }
+<span class="nc" id="L103">    }</span>
+
+    @Test
+    public void testReadXmlMetaFileFilter() throws Exception {
+<span class="nc" id="L107">        final String path = getPath(&quot;InputXmlMetaReaderFileFilter.xml&quot;);</span>
+<span class="nc" id="L108">        try (InputStream is = Files.newInputStream(Paths.get(path))) {</span>
+<span class="nc" id="L109">            final ModuleDetails result = XmlMetaReader.read(is, ModuleType.FILEFILTER);</span>
+<span class="nc" id="L110">            checkModuleProps(result, ModuleType.FILEFILTER,</span>
+                &quot;File filter description&quot;,
+                &quot;com.puppycrawl.tools.checkstyle.filefilters.FileFilter&quot;,
+                &quot;com.puppycrawl.tools.checkstyle.Checker&quot;);
+<span class="nc" id="L114">            assertThat(result.getName()).isEqualTo(&quot;FileFilter&quot;);</span>
+<span class="nc" id="L115">            assertThat(result.getViolationMessageKeys().isEmpty()).isTrue();</span>
+<span class="nc" id="L116">            final List&lt;ModulePropertyDetails&gt; props = result.getProperties();</span>
+<span class="nc" id="L117">            assertThat(props.size()).isEqualTo(1);</span>
+<span class="nc" id="L118">            final ModulePropertyDetails prop1 = props.get(0);</span>
+<span class="nc" id="L119">            assertThat(prop1.getName()).isEqualTo(&quot;fileNamePattern&quot;);</span>
+<span class="nc" id="L120">            assertThat(prop1.getType()).isEqualTo(&quot;java.util.regex.Pattern&quot;);</span>
+<span class="nc" id="L121">            assertThat(prop1.getDefaultValue()).isNull();</span>
+<span class="nc" id="L122">            assertThat(prop1.getValidationType()).isNull();</span>
+<span class="nc" id="L123">            assertThat(prop1.getDescription())</span>
+<span class="nc" id="L124">                .isEqualTo(&quot;Define regular expression to match the file name against.&quot;);</span>
+        }
+<span class="nc" id="L126">    }</span>
+
+    @Test
+    public void testReadXmlMetaModuleTypeNull() throws Exception {
+<span class="nc" id="L130">        try (InputStream is = IOUtils.toInputStream(&quot;&quot;, &quot;UTF-8&quot;)) {</span>
+<span class="nc" id="L131">            assertThat(XmlMetaReader.read(is, null)).isNull();</span>
+        }
+<span class="nc" id="L133">    }</span>
+
+    private static void checkModuleProps(ModuleDetails result, ModuleType moduleType,
+                                         String description,
+                                         String fullName, String parent) {
+<span class="nc" id="L138">        assertThat(result.getModuleType()).isEqualTo(moduleType);</span>
+<span class="nc" id="L139">        assertThat(result.getDescription()).isEqualTo(description);</span>
+<span class="nc" id="L140">        assertThat(result.getFullQualifiedName()).isEqualTo(fullName);</span>
+<span class="nc" id="L141">        assertThat(result.getParent()).isEqualTo(parent);</span>
+<span class="nc" id="L142">    }</span>
+
+    private static void checkProperty(ModulePropertyDetails prop, String name,
+                                      String type, String defaultValue, String description) {
+<span class="nc" id="L146">        assertThat(prop.getName()).isEqualTo(name);</span>
+<span class="nc" id="L147">        assertThat(prop.getType()).isEqualTo(type);</span>
+<span class="nc" id="L148">        assertThat(prop.getDefaultValue()).isEqualTo(defaultValue);</span>
+<span class="nc" id="L149">        assertThat(prop.getDescription()).isEqualTo(description);</span>
+<span class="nc" id="L150">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

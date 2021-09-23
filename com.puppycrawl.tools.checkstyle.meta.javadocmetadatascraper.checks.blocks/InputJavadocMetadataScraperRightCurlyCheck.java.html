@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InputJavadocMetadataScraperRightCurlyCheck.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">checkstyle$MetadataGeneratorUtilTest.exec</a> &gt; <a href="index.source.html" class="el_package">com.puppycrawl.tools.checkstyle.meta.javadocmetadatascraper.checks.blocks</a> &gt; <span class="el_source">InputJavadocMetadataScraperRightCurlyCheck.java</span></div><h1>InputJavadocMetadataScraperRightCurlyCheck.java</h1><pre class="source lang-java linenums">////////////////////////////////////////////////////////////////////////////////
+// checkstyle: Checks Java source code for adherence to a set of rules.
+// Copyright (C) 2001-2021 the original author or authors.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+////////////////////////////////////////////////////////////////////////////////
+
+package com.puppycrawl.tools.checkstyle.meta.javadocmetadatascraper.checks.blocks;
+
+import java.util.Arrays;
+import java.util.Locale;
+
+import com.puppycrawl.tools.checkstyle.DetailAstImpl;
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
+import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
+
+/**
+ * &lt;p&gt;
+ * Checks the placement of right curly braces ({@code '}'}) for code blocks. This check supports
+ * if-else, try-catch-finally blocks, while-loops, for-loops,
+ * method definitions, class definitions, constructor definitions,
+ * instance, static initialization blocks, annotation definitions and enum definitions.
+ * For right curly brace of expression blocks of arrays, lambdas and class instances
+ * please follow issue
+ * &lt;a href=&quot;https://github.com/checkstyle/checkstyle/issues/5945&quot;&gt;#5945&lt;/a&gt;.
+ * For right curly brace of enum constant please follow issue
+ * &lt;a href=&quot;https://github.com/checkstyle/checkstyle/issues/7519&quot;&gt;#7519&lt;/a&gt;.
+ * &lt;/p&gt;
+ * &lt;ul&gt;
+ * &lt;li&gt;
+ * Property {@code option} - Specify the policy on placement of a right curly brace
+ * (&lt;code&gt;'}'&lt;/code&gt;).
+ * Type is {@code com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyOption}.
+ * Default value is {@code same}.
+ * &lt;/li&gt;
+ * &lt;li&gt;
+ * Property {@code tokens} - tokens to check
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
+ * Default value is:
+ * &lt;a href=&quot;https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_TRY&quot;&gt;
+ * LITERAL_TRY&lt;/a&gt;,
+ * &lt;a href=&quot;https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_CATCH&quot;&gt;
+ * LITERAL_CATCH&lt;/a&gt;,
+ * &lt;a href=&quot;https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_FINALLY&quot;&gt;
+ * LITERAL_FINALLY&lt;/a&gt;,
+ * &lt;a href=&quot;https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_IF&quot;&gt;
+ * LITERAL_IF&lt;/a&gt;,
+ * &lt;a href=&quot;https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_ELSE&quot;&gt;
+ * LITERAL_ELSE&lt;/a&gt;.
+ * &lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * To configure the check:
+ * &lt;/p&gt;
+ * &lt;pre&gt;
+ * skipped as not relevant for UTs
+ * &lt;/pre&gt;
+ * &lt;p&gt;
+ * Parent is {@code com.puppycrawl.tools.checkstyle.TreeWalker}
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Violation Message Keys:
+ * &lt;/p&gt;
+ * &lt;ul&gt;
+ * &lt;li&gt;
+ * {@code line.alone}
+ * &lt;/li&gt;
+ * &lt;li&gt;
+ * {@code line.break.before}
+ * &lt;/li&gt;
+ * &lt;li&gt;
+ * {@code line.same}
+ * &lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * @since 3.0
+ */
+@StatelessCheck
+<span class="nc" id="L97">public abstract class InputJavadocMetadataScraperRightCurlyCheck extends AbstractCheck {</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
